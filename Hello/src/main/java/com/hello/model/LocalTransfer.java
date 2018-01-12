@@ -8,22 +8,22 @@ public class LocalTransfer {
 
 	@Id
 	private String id;
-	private String userId;
+	private String logonUsername;
 	private String bankName;
 	private String fromAccNo;
 	private String toAccNo;
 	
+	public String getLogonUsername() {
+		return logonUsername;
+	}
+	public void setLogonUsername(String logonUsername) {
+		this.logonUsername = logonUsername;
+	}
 	public String getId() {
 		return id;
 	}
 	public void setId(String id) {
 		this.id = id;
-	}
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
 	}
 	public String getBankName() {
 		return bankName;

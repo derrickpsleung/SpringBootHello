@@ -10,6 +10,6 @@ import com.hello.model.LocalTransfer;
 @Repository
 public interface LocalTransferRepository extends MongoRepository<LocalTransfer, String> {
 
-	public List<LocalTransfer> findByUserId(String userId);
+	public List<LocalTransfer> findByLogonUsername(String username);
 
 }
