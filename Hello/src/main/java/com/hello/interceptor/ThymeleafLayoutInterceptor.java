@@ -22,18 +22,12 @@ import com.hello.config.SystemConfig;
 @Configuration
 @PropertySource(value="classpath:/web.properties")
 public class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
+    //implements MessageSourceAware{
 	 
-
-//	@Value("${mvc.default.layout}")
-//    private String defaultLayout;
-//    
-//
-//	@Value("${mvc.default.view.attribute.name}")
-//    private String viewAttributeName;
- 
 	private static Log logger = LogFactory.getLog(ThymeleafLayoutInterceptor.class);
 	
-	@Bean
+
+    @Bean
     public static PropertySourcesPlaceholderConfigurer propertyConfig() {
         return new PropertySourcesPlaceholderConfigurer();
     }
@@ -55,9 +49,11 @@ public class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
         modelAndView.setViewName(layoutName);
         
         ParentViewPath pvp = getMethodOrTypeAnnotation((HandlerMethod)handler, ParentViewPath.class);
+        String viewName = (pvp==null?"":pvp.value())+originalViewName;
+        
         //set fragment
-        modelAndView.addObject(SystemConfig.DEFAULT_VIEW_ATTRIBUTE_NAME, (pvp==null?"":pvp.value())+originalViewName);
-
+        modelAndView.addObject(SystemConfig.DEFAULT_VIEW_ATTRIBUTE_NAME, viewName);
+ 
     }
  
     private boolean isRedirectOrForward(String viewName) {
@@ -82,4 +78,5 @@ public class ThymeleafLayoutInterceptor extends HandlerInterceptorAdapter {
         }
         return annotation;
     }
+
 }

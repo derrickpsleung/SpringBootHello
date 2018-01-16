@@ -28,9 +28,7 @@ public class LocalTransferController {
 
 	private static Log logger = LogFactory.getLog(LocalTransferController.class);
 	
-//	@Autowired
-//	private BaseUserRepository usrRepository;
-	
+
 	@Autowired
 	private LocalTransferRepository localTransferRepository;
 	

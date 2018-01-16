@@ -1,5 +1,7 @@
 package hello;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
 
@@ -13,6 +15,8 @@ import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.ReloadableResourceBundleMessageSource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -30,7 +34,7 @@ public class Application extends WebMvcConfigurerAdapter implements CommandLineR
 	
 	private static Log logger = LogFactory.getLog(Application.class);
 	
-    @Bean
+    @Bean(value="localeChangeInterceptor")
     public LocaleChangeInterceptor localeChangeInterceptor() {
         LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
         lci.setParamName("lang");
@@ -44,14 +48,30 @@ public class Application extends WebMvcConfigurerAdapter implements CommandLineR
         return slr;
     }
     
-    @Bean
-    public MessageSource getMessageResource() {
+    //!!! remember to define the value (or the method name = messageSource) in order to override the default setting!!!
+    @Bean(value="messageSource")
+    public MessageSource getMessageResource() throws IOException {
         ReloadableResourceBundleMessageSource messageResource= new ReloadableResourceBundleMessageSource();
          
         // Read i18n/messages_xxx.properties file.
         // For example: i18n/messages_en.properties
-        messageResource.setBasename("classpath:i18n/default");
+        PathMatchingResourcePatternResolver pmrps = new PathMatchingResourcePatternResolver();
+        Resource[] resources = pmrps.getResources("classpath:i18n/**/*.properties");
+        ArrayList<String> propertiesPathList = new ArrayList<String>();
+        for(Resource src: resources) {
+            if(src.getFilename().indexOf("_") < 0) {
+                String url = src.getURL().toString();
+                url = url.substring(0, url.lastIndexOf("."));
+                logger.info(String.format("messageSource: %s", url));
+                propertiesPathList.add(url);
+            }
+        }
+        String[] propertiesPathArr = new String[propertiesPathList.size()];
+        propertiesPathArr = propertiesPathList.toArray(propertiesPathArr);
+
+        messageResource.setBasenames(propertiesPathArr);
         messageResource.setDefaultEncoding("UTF-8");
+        
         return messageResource;
     }
     
@@ -65,6 +85,7 @@ public class Application extends WebMvcConfigurerAdapter implements CommandLineR
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //for accessing webjars in front-end
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/i18n/**").addResourceLocations("classpath:/i18n/");
     }
 
 	
