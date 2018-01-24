@@ -85,6 +85,7 @@ public class Application extends WebMvcConfigurerAdapter implements CommandLineR
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         //for accessing webjars in front-end
         registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("/static/**").addResourceLocations("classpath:/static/");
         registry.addResourceHandler("/i18n/**").addResourceLocations("classpath:/i18n/");
     }
 

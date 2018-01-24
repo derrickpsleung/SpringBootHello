@@ -28,17 +28,8 @@ public class LocalTransferController {
 
 	private static Log logger = LogFactory.getLog(LocalTransferController.class);
 	
-
 	@Autowired
 	private LocalTransferRepository localTransferRepository;
-	
-	/* ***** Example *****
-	@RequestMapping("/greeting")
-    public String greeting(@RequestParam(value="name", required=false, defaultValue="World") String name, Model model) {
-        model.addAttribute("name", name);
-        return "greeting";
-    }
-    */
 	
 	@RequestMapping(method = RequestMethod.POST, value={"/processCreateLocalTransfer"})
     public String processCreateTransfer(Authentication authentication, @ModelAttribute("form") LocalTransferForm form) {
